@@ -1,9 +1,27 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import DatePicker from 'react-datepicker';
-import moment from 'moment';
-
+import DatePicker, { registerLocale, setDefaultLocale } from 'react-datepicker';
+import { parse, format as dateFormat } from 'date-fns';
 import { Input, withInput } from '@axa-fr/react-toolkit-form-core';
+
+// Locales les plus courrantes
+import es from 'date-fns/locale/es';
+import en from 'date-fns/locale/en-GB';
+import fr from 'date-fns/locale/fr';
+import us from 'date-fns/locale/en-US';
+import de from 'date-fns/locale/de';
+
+const locales = {
+  'es-ES': es,
+  'en-GB': en,
+  'fr-FR': fr,
+  'de-DE': de,
+  'en-US': us,
+};
+
+for (const [key, value] of Object.entries(locales)) {
+  registerLocale(key, value);
+}
 
 const CustomDate = props => {
   const {
@@ -15,6 +33,7 @@ const CustomDate = props => {
     viewValue,
     value,
     locale,
+    format,
     readOnly,
     disabled,
     onChangeRaw,
@@ -24,7 +43,7 @@ const CustomDate = props => {
 
   let currentViewValue = '';
   if (value) {
-    currentViewValue = value.format('L');
+    currentViewValue = dateFormat(value, format);
   } else if (viewValue != null && viewValue != undefined) {
     currentViewValue = viewValue;
   }
@@ -50,12 +69,14 @@ const propTypes = {
   value: PropTypes.object,
   viewValue: PropTypes.string,
   locale: PropTypes.string,
+  format: PropTypes.string,
 };
 const defaultClassName = 'af-datepicker';
 const defaultProps = {
   value: null,
   viewValue: null,
-  locale: 'fr-fr',
+  locale: 'fr-FR',
+  format: 'dd/MM/yyyy',
   className: defaultClassName,
   fixedHeight: true,
   showMonthDropdown: true,
@@ -66,12 +87,9 @@ const defaultProps = {
   yearDropdownItemNumber: 6,
 };
 
-const localizeMoment = ({ locale }) => date =>
-  date.clone().locale(locale || moment.locale());
-
 const handlers = {
-  onChange: ({ id, name, onChange }) => date => {
-    const viewValue = date ? date.format('L') : '';
+  onChange: ({ id, name, onChange, format }) => date => {
+    const viewValue = date ? dateFormat(date, format) : '';
     onChange({
       value: date,
       viewValue,
@@ -79,23 +97,17 @@ const handlers = {
       id,
     });
   },
-  onChangeRaw: ({ locale, id, name, onChange }) => event => {
-    const momentLocal = moment();
-    const localLocale = momentLocal.locale(locale);
-    const localData = localLocale.localeData();
-    const localFormat = localData.longDateFormat('L');
-
+  onChangeRaw: ({ format, id, name, onChange }) => event => {
     const dateString = event.target.value;
-    const momentObj = localizeMoment(locale)(
-      moment(dateString, localFormat, true)
-    );
-    const date = momentObj.isValid() ? momentObj : null;
-    onChange({
-      value: date,
-      viewValue: dateString,
-      name,
-      id,
-    });
+    if (dateString) {
+      const date = parse(dateString, format, new Date());
+      onChange({
+        value: date,
+        viewValue: dateString,
+        name,
+        id,
+      });
+    }
   },
 };
 
