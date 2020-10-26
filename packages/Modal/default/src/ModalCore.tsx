@@ -15,10 +15,10 @@ interface ModalCoreComponentProps {
   isOpen: boolean;
   onOutsideTap: (event: React.MouseEvent | React.KeyboardEvent) => void;
   className?: string;
-  title?:string
+  title?: string;
 }
 
-const ModalCoreRaw: React.SFC<ModalCoreComponentProps> = props => (
+const ModalCoreRaw: React.FC<ModalCoreComponentProps> = (props) => (
   <ReactModal
     className={props.className}
     isOpen={props.isOpen}
@@ -27,7 +27,6 @@ const ModalCoreRaw: React.SFC<ModalCoreComponentProps> = props => (
     }}
     contentLabel={props.title}
     onRequestClose={props.onOutsideTap}>
-
     <div className="af-modal__dialog">
       <div className="af-modal__content">{props.children}</div>
     </div>

@@ -13,7 +13,7 @@ interface HeaderCoreComponentProps {
   onCancel: React.MouseEventHandler<HTMLButtonElement>;
 }
 
-const HeaderCoreRaw: React.SFC<HeaderCoreProps> = ({
+const HeaderCoreRaw: React.FC<HeaderCoreProps> = ({
   className,
   children,
   onCancel,
