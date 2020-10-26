@@ -1,44 +1,37 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { usePopper } from 'react-popper';
-import PropTypes from 'prop-types';
 import { ClassManager, Constants } from '@axa-fr/react-toolkit-core';
-import PopoverPlacements from './PopoverPlacements';
+import Placement from './PopoverPlacements';
 
-const propTypes = {
-  ...Constants.propTypes,
-  isOpen: PropTypes.bool.isRequired,
-  children: PropTypes.any,
-  placement: PropTypes.oneOf([
-    PopoverPlacements.top,
-    PopoverPlacements.bottom,
-    PopoverPlacements.left,
-    PopoverPlacements.right,
-  ]),
-};
 const defaultClassName = 'af-popover__container';
 const defaultProps = {
   ...Constants.defaultProps,
   className: defaultClassName,
-  placement: PopoverPlacements.top,
+  placement: 'top' as Placement,
 };
 
-const Pop = props => [props.children];
-const Over = props => [props.children];
+type Props = Partial<typeof defaultProps> & {
+  children: React.ReactNode | React.ReactNode[];
+  isOpen: boolean;
+  onMouseEnter?: (event: React.MouseEvent) => void;
+  onMouseLeave?: (event: React.MouseEvent) => void;
+};
 
-const PopoverBase = props => {
-  const {
-    children,
-    isOpen,
-    placement,
-    className,
-    classModifier,
-    onMouseEnter,
-    onMouseLeave,
-  } = props;
+const Pop: React.ComponentType<React.PropsWithChildren<{}>> = (props) => <>{props.children}</>;
+const Over: React.ComponentType<React.PropsWithChildren<{}>> = (props) => <>{props.children}</>;
 
+const PopoverBase = ({
+  children,
+  isOpen,
+  placement,
+  className,
+  classModifier,
+  onMouseEnter,
+  onMouseLeave,
+}: Props) => {
   const childs = React.Children.toArray(children);
-  const targetElement = childs.filter(c => c.type === Over);
-  const contentElement = childs.filter(c => c.type === Pop);
+  const targetElement = childs.filter((c: React.ReactElement) => c.type === Over);
+  const contentElement = childs.filter((c: React.ReactElement) => c.type === Pop);
   return (
     <AnimatedPopover
       target={targetElement}
@@ -47,7 +40,8 @@ const PopoverBase = props => {
       className={className}
       classModifier={classModifier}
       onMouseEnter={onMouseEnter}
-      onMouseLeave={onMouseLeave}>
+      onMouseLeave={onMouseLeave}
+    >
       {contentElement}
     </AnimatedPopover>
   );
@@ -56,30 +50,30 @@ const PopoverBase = props => {
 PopoverBase.Over = Over;
 PopoverBase.Pop = Pop;
 
-PopoverBase.propTypes = propTypes;
 PopoverBase.defaultProps = defaultProps;
 
-export const AnimatedPopover = props => {
-  const {
-    placement,
-    children,
-    isOpen,
-    target,
-    className,
-    classModifier,
-    onMouseEnter,
-    onMouseLeave,
-  } = props;
-
+type PropsAnimatedPopover = Props & {
+  target: React.ReactNode;
+};
+export const AnimatedPopover = ({
+  placement,
+  children,
+  isOpen,
+  target,
+  className,
+  classModifier,
+  onMouseEnter,
+  onMouseLeave,
+}: PropsAnimatedPopover) => {
   const componentClassName = ClassManager.getComponentClassName(
     className,
     classModifier,
     defaultClassName
   );
 
-  const [referenceElement, setReferenceElement] = useState(null);
-  const [popperElement, setPopperElement] = useState(null);
-  const [arrowElement, setArrowElement] = useState(null);
+  const [referenceElement, setReferenceElement] = React.useState(null);
+  const [popperElement, setPopperElement] = React.useState(null);
+  const [arrowElement, setArrowElement] = React.useState(null);
   const { styles, attributes } = usePopper(referenceElement, popperElement, {
     modifiers: [
       {
@@ -100,10 +94,7 @@ export const AnimatedPopover = props => {
 
   return (
     <div className={componentClassName}>
-      <div
-        ref={setReferenceElement}
-        className="af-popover__container-over"
-        role="presentation">
+      <div ref={setReferenceElement} className="af-popover__container-over" role="presentation">
         {target}
       </div>
 
@@ -115,13 +106,10 @@ export const AnimatedPopover = props => {
           style={styles.popper}
           data-popper-placement={placement}
           className="af-popover__container-pop"
-          {...attributes.popper}>
+          {...attributes.popper}
+        >
           <div>{children}</div>
-          <div
-            ref={setArrowElement}
-            style={styles.arrow}
-            className="af-popover__arrow"
-          />
+          <div ref={setArrowElement} style={styles.arrow} className="af-popover__arrow" />
         </div>
       )}
     </div>

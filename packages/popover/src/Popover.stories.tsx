@@ -1,4 +1,5 @@
-import React from 'react';
+import * as React from 'react';
+import { Story } from '@storybook/react/types-6-0';
 import Popover from './Popover';
 import PopoverPlacements from './PopoverPlacements';
 import PopoverModes from './PopoverModes';
@@ -33,8 +34,8 @@ export default {
     },
   },
 };
-
-const Template = args => (
+type PopoverProps = React.ComponentProps<typeof Popover>;
+const Template: Story<PopoverProps> = (args) => (
   <Popover {...args}>
     <Popover.Pop>
       <h1>Contenu qui va reçevoir la popover</h1>
@@ -46,7 +47,8 @@ const Template = args => (
           width: '200px',
           height: '200px',
           backgroundColor: 'green',
-        }}>
+        }}
+      >
         Exemple
       </div>
     </Popover.Over>

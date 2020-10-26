@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import { ClassManager, Constants } from '@axa-fr/react-toolkit-core';
 import { CollapseProps } from './CollapseCardBase';
 import { HeaderToggleElement } from './Header';
@@ -25,10 +25,17 @@ export const AccordionBase = ({
   collapses,
 }: Props) => {
   const renderedChildren = React.Children.map(children, (child, index) => {
+    let mixCallback = handleToggle;
+    if(child.props.onToggle) {
+      mixCallback = (e: HeaderToggleElement) => {
+        handleToggle(e);
+        child.props.onToggle(e);
+      };
+    }
     return React.cloneElement(child, {
       ...child.props,
       index,
-      onToggle: handleToggle,
+      onToggle: mixCallback,
       collapse:
         collapses[index] !== undefined
           ? collapses[index]

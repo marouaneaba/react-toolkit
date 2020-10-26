@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
 import { text, boolean } from '@storybook/addon-knobs';
@@ -84,7 +84,7 @@ const AccordionStory = () => (
     classModifier={text('classModifier', '')}
     className={text('className', '')}
     onlyOne={boolean('onlyOne', true)}>
-    <CollapseCardBase collapse={false}>
+    <CollapseCardBase collapse={false} onToggle={action('onToggle')}>
       <CollapseCard.Header>
         {text(KNOBS_LABELS.collapse1.title, LABELS.collapse1.title)}
       </CollapseCard.Header>
@@ -94,7 +94,7 @@ const AccordionStory = () => (
       </CollapseCard.Body>
     </CollapseCardBase>
 
-    <CollapseCardBase>
+    <CollapseCardBase onToggle={action('onToggle')}>
       <CollapseCard.Header>
         {text(KNOBS_LABELS.collapse2.title, LABELS.collapse2.title)}
       </CollapseCard.Header>
@@ -103,7 +103,7 @@ const AccordionStory = () => (
       </CollapseCard.Body>
     </CollapseCardBase>
 
-    <CollapseCardBase collapse={false}>
+    <CollapseCardBase collapse={false} onToggle={action('onToggle')}>
       <CollapseCard.Header>
         {text(KNOBS_LABELS.collapse3.title, LABELS.collapse3.title)}
       </CollapseCard.Header>
@@ -119,7 +119,8 @@ const AccordionSingleStory = () => (
     classModifier={text('classModifier', '')}
     className={text('className', '')}
     onlyOne={boolean('onlyOne', true)}>
-    <CollapseCardBase id="idcollaspe1">
+    <CollapseCardBase
+      id="idcollaspe1">
       <CollapseCard.Header>
         {text(KNOBS_LABELS.collapse1.title, LABELS.collapse1.title)}
       </CollapseCard.Header>

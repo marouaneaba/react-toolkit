@@ -1,5 +1,5 @@
-import * as React from 'react';
-import * as ReactModal from 'react-modal';
+import React from 'react';
+import ReactModal from 'react-modal';
 import {
   withClassDefault,
   withClassModifier,
@@ -13,7 +13,7 @@ ReactModal.setAppElement('body');
 
 interface ModalCoreComponentProps {
   isOpen: boolean;
-  onOutsideTap: (event: MouseEvent | KeyboardEvent) => void;
+  onOutsideTap: (event: React.MouseEvent | React.KeyboardEvent) => void;
   className?: string;
 }
 
